@@ -98,12 +98,7 @@ int main(){
                 	 printf("%s is not recorded in the system", n1);
                      break;
 				}
-                FriendNode* Friend1 = locateFriend(Node1, n2);
-                if(Friend1 == NULL){
-                	printf("These two persons are not friends");
-                	break;
-				}
-                deleteFriend(Node1,Friend1);
+                deleteFriend(Node1,n2);
                 
                 
                 HashNode* Node2 = locateHash(n2, hashtable, size);
@@ -111,8 +106,7 @@ int main(){
                 	 printf("%s is not recorded in the system", n2);
                      break;
 				}
-                FriendNode * Friend2 = locateFriend(Node2, n1);
-                deleteFriend(Node2,Friend2);
+                deleteFriend(Node2,n1);
                 
                 break;
             }
@@ -125,7 +119,18 @@ int main(){
                 
                 HashNode* node;
                 node = locateHash(n1, hashtable, size);
-                FriendNode* Friend = locateFriend(node, n2);
+                if(node == NULL){
+                	printf("NO\n");
+                	break; 
+				}
+				FriendNode* Friend = node->frd;
+    			while (Friend != NULL) {
+        			if (strcmp(Friend->firstName,n2)==0) {
+            				break;
+        			}
+        			Friend = Friend->next;
+   				}
+                
                 if(Friend == NULL){
                 	 printf("NO\n");
                 	 break; 
