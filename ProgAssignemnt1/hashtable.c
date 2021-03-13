@@ -14,12 +14,12 @@ void displayMenu(){
     printf("\nX : Terminate the program\n");
 }
 
-HashNode* initHashNode(int hashIndex, int key, char* val){
+HashNode* initHashNode(int key, int index, char* val){
     HashNode* node = (HashNode*)malloc(sizeof(HashNode));
     node->next = NULL;
     node->frd = NULL;
     node->name = val;
-    node->index = hashIndex;
+    node->index = index;
     node->key = key;
     return node;
 }
@@ -38,81 +38,60 @@ HashNode* locateHash(char* target, Hash* hashTable, int size){
     }
 
     int key = keyHelper(target);
-    int hashIndex = key % size;
-    HashNode* node = hashTable[hashIndex].head;
+    int index = key % size;
+    HashNode* node = hashTable[index].head;
 
-    if(node == NULL){    //There is no such hashIndex for such name
+    if(node == NULL){    //There is no such hash index for such name
         return NULL;
     }
 
     bool temp = false;
-    while(node != NULL){    //Traverse the Linked list for the specific hashIndex 
-        if(strcmp(target, node->name) != 0){  
-		    node = node->next;   
-            temp = false;
-        }
-       		temp = true;
+    while(node != NULL){    //Traverse the Linked list for the specific hash index 
+        if(strcmp(target, node->name) == 0){     
+            temp = true;
             break;
+        }
+        node = node->next;
     }
 
     if(!temp){
-        return NULL;   //If none of the hashIndex nodes has the target name.
+        return NULL;   //If none of the hash index nodes has the target name.
     }
     return node;
 }
 
-FriendNode* locateFriend(HashNode* node, char* friendName){
-    if(node == NULL || friendName == NULL){
-        return NULL;
-    }
-
-    FriendNode* friendnode = node->frd;
-
-    if(friendnode == NULL){    //The specific person does not have any friends.
-        return NULL;
-    }
-
-    bool temp = false;
-    while (friendnode != NULL) {
-        if (strcmp(friendnode->firstName,friendName) != 0 ) {
-        	friendnode = friendnode->next;
-			temp = false;           
-        }
-        temp = true;
-        break;
-    }
-    if(!temp){
-        return NULL;   //If there is no friend whose name is the required name.
-    }
-    return friendnode;
-}
-
-void deleteFriend(HashNode* Node, FriendNode* Friend){     //Given one hashnode and one friendnode, then this function will delete the friend from the friend linked list
-	if(Friend->prev == NULL){
-        Node->frd = Friend->next;
-        if(Friend->next != NULL){
-        	Friend->next->prev = NULL;
-		}     
-    }else{
-        Friend->prev->next = Friend->next;
-        if(Friend->next != NULL){
-            Friend->next->prev = Friend->prev;
-		}         
-    }
+void deleteFriend(HashNode* node, char* FriendName){     //Given one hashnode and one friendnode, then this function will delete the friend from the friend linked list    
+    FriendNode* Friend = node->frd;
+	while(Friend != NULL){
+		if(strcmp(Friend->firstName, FriendName) == 0){
+			if(Friend->prev == NULL){
+				node->frd = Friend->next;
+				Friend->next->prev = NULL;
+			}else{
+			    Friend->prev->next = Friend->next;
+        		if(Friend->next != NULL){
+           			Friend->next->prev = Friend->prev;
+				}
+			}
+		}
+		Friend = Friend->next;
+	} 
     free(Friend);
     return;
 }
 
-void connectFriend(HashNode* Node, FriendNode* Friend){  //Given one hashnode and one friendnode, then this function will add the friend to the friend linked list
-	if(Node->frd == NULL){
-        Node->frd = Friend;
+void connectFriend(HashNode* node, FriendNode* Friend){  //Given one hashnode and one friendnode, then this function will add the friend to the friend linked list
+	if(node->frd != NULL){
+		Friend->next = node->frd;
+        node->frd->prev = Friend;
+        node->frd = Friend;
+        
     }else{
-        Friend->next = Node->frd;
-        Node->frd->prev = Friend;
-        Node->frd = Friend;
+        node->frd = Friend;
     }
     return;
 }
+
 int keyHelper(char* val){
     int k = 0;
     int i;
