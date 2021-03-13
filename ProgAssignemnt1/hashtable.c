@@ -47,11 +47,12 @@ HashNode* locateHash(char* target, Hash* hashTable, int size){
 
     bool temp = false;
     while(node != NULL){    //Traverse the Linked list for the specific hashIndex 
-        if(!strcmp(target, node->name)){     
-            temp = true;
-            break;
+        if(strcmp(target, node->name) != 0){  
+		    node = node->next;   
+            temp = false;
         }
-        node = node->next;
+       		temp = true;
+            break;
     }
 
     if(!temp){
@@ -66,18 +67,19 @@ FriendNode* locateFriend(HashNode* node, char* friendName){
     }
 
     FriendNode* friendnode = node->frd;
-    
+
     if(friendnode == NULL){    //The specific person does not have any friends.
         return NULL;
     }
 
     bool temp = false;
     while (friendnode != NULL) {
-        if (!strcmp(friendnode->firstName,friendName)) {
-            temp = true;
-            break;
+        if (strcmp(friendnode->firstName,friendName) != 0 ) {
+        	friendnode = friendnode->next;
+			temp = false;           
         }
-        friendnode = friendnode->next;
+        temp = true;
+        break;
     }
     if(!temp){
         return NULL;   //If there is no friend whose name is the required name.
@@ -86,17 +88,16 @@ FriendNode* locateFriend(HashNode* node, char* friendName){
 }
 
 void deleteFriend(HashNode* Node, FriendNode* Friend){     //Given one hashnode and one friendnode, then this function will delete the friend from the friend linked list
-	if(Friend->prev == NULL){                         //If the friend node is the first node in this doubly linked list
+	if(Friend->prev == NULL){
         Node->frd = Friend->next;
         if(Friend->next != NULL){
         	Friend->next->prev = NULL;
 		}     
     }else{
-	if(Friend->next != NULL){                      //If the friend noed is not the first node in this doubly linked list
-            Friend->next->prev = Friend->prev;
-	}
         Friend->prev->next = Friend->next;
-               
+        if(Friend->next != NULL){
+            Friend->next->prev = Friend->prev;
+		}         
     }
     free(Friend);
     return;
@@ -112,7 +113,6 @@ void connectFriend(HashNode* Node, FriendNode* Friend){  //Given one hashnode an
     }
     return;
 }
-
 int keyHelper(char* val){
     int k = 0;
     int i;
