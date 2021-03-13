@@ -4,13 +4,12 @@
 #include "hashtable.h"
 
 int main(){
+    displayMenu();
     int size = 26; 
     char command = '0';
     Hash* hashtable = (Hash*)calloc (size, sizeof(Hash));
     
     while(command != 'X'){
-        displayMenu();
-
         scanf("%c", &command);
 
         switch(command){
