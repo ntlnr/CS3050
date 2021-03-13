@@ -47,7 +47,7 @@ HashNode* locateHash(char* target, Hash* hashTable, int size){
 
     bool temp = false;
     while(node != NULL){    //Traverse the Linked list for the specific hashIndex 
-        if(strcmp(target, node->name) == 0){     
+        if(!strcmp(target, node->name)){     
             temp = true;
             break;
         }
@@ -73,7 +73,7 @@ FriendNode* locateFriend(HashNode* node, char* friendName){
 
     bool temp = false;
     while (friendnode != NULL) {
-        if (strcmp(friendnode->firstName,friendName)==0) {
+        if (!strcmp(friendnode->firstName,friendName)) {
             temp = true;
             break;
         }
@@ -86,16 +86,17 @@ FriendNode* locateFriend(HashNode* node, char* friendName){
 }
 
 void deleteFriend(HashNode* Node, FriendNode* Friend){     //Given one hashnode and one friendnode, then this function will delete the friend from the friend linked list
-	if(Friend->prev == NULL){
+	if(Friend->prev == NULL){                         //If the friend node is the first node in this doubly linked list
         Node->frd = Friend->next;
         if(Friend->next != NULL){
         	Friend->next->prev = NULL;
 		}     
     }else{
-        Friend->prev->next = Friend->next;
-        if(Friend->next != NULL){
+	if(Friend->next != NULL){                      //If the friend noed is not the first node in this doubly linked list
             Friend->next->prev = Friend->prev;
-		}         
+	}
+        Friend->prev->next = Friend->next;
+               
     }
     free(Friend);
     return;
@@ -105,12 +106,14 @@ void connectFriend(HashNode* Node, FriendNode* Friend){  //Given one hashnode an
 	if(Node->frd == NULL){
         Node->frd = Friend;
     }else{
+	Friend->prev = NULL;
         Friend->next = Node->frd;
         Node->frd->prev = Friend;
         Node->frd = Friend;
     }
     return;
 }
+
 int keyHelper(char* val){
     int k = 0;
     int i;
