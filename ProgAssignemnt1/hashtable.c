@@ -106,7 +106,6 @@ void connectFriend(HashNode* Node, FriendNode* Friend){  //Given one hashnode an
 	if(Node->frd == NULL){
         Node->frd = Friend;
     }else{
-	Friend->prev = NULL;
         Friend->next = Node->frd;
         Node->frd->prev = Friend;
         Node->frd = Friend;
