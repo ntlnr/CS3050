@@ -4,57 +4,58 @@
 #include "hashtable.h"
 
 int main(){
-    displayMenu();
     int size = 26; 
-    char command = '0';
+    char command;
     Hash* hashtable = (Hash*)calloc (size, sizeof(Hash));
     
-    while(command != 'X'){
-        scanf("%c", &command);
+    displayMenu();
+    
+	do{
+        command = getchar();
 
         switch(command){
             case 'P':{
             	getchar();
-                char* name = (char*)calloc(50, sizeof(char));
-                scanf("%s",name);
-                int key = keyHelper(name);
-                int hashIndex = key % size;
-                HashNode* node = initHashNode(hashIndex, key, name);
+                char* userName = (char*)calloc(50, sizeof(char));
+                scanf("%s",userName);
+                int index = keyHelper(userName) % size;
+                HashNode* node = initHashNode(index, keyHelper(userName), userName);
 
-                if(hashtable[hashIndex].head == NULL){
-                    hashtable[hashIndex].head = node;
-                    hashtable[hashIndex].elements = 1;
+                if(hashtable[index].head != NULL){
+                	node->next = hashtable[index].head;
+                    hashtable[index].head = node;
+                    hashtable[index].elements++;
                     break;
+                    
                 }else{
-                    node->next = hashtable[hashIndex].head;
-                    hashtable[hashIndex].head = node;
-                    hashtable[hashIndex].elements++;
+                   hashtable[index].head = node;
+                    hashtable[index].elements = 1;
                     break;
                 }
             }
 
             case 'F':{
             	getchar();
-                char* name1 = (char*)calloc(50, sizeof(char));
-                char* name2 = (char*)calloc(50, sizeof(char));
-                scanf("%s %s",name1, name2);
-                int key1 = keyHelper(name1);
-                int key2 = keyHelper(name2);
+                char* n1 = (char*)calloc(50, sizeof(char));
+                char* n2 = (char*)calloc(50, sizeof(char));
+                scanf("%s %s",n1, n2);
+                int key1 = keyHelper(n1);
+                int key2 = keyHelper(n2);
 
-                HashNode* node1 = locateHash(name1, hashtable, size);
+                HashNode* node1 = locateHash(n1, hashtable, size);
                 if(node1 == NULL){
-                     printf("%s is not recorded in the system", name1);
+                     printf("%s is not recorded in the system", n1);
                      break;
                 }
-                FriendNode* friend1 = initFriendNode(name2);
+                FriendNode* friend1 = initFriendNode(n2);
                 if(friend1 == NULL){
                     printf("The memory allocation failed");
                     break;
                 }
                 connectFriend(node1, friend1);
                 
-                HashNode* node2= locateHash(name2, hashtable, size);
-                FriendNode* friend2 = initFriendNode(name1);
+                HashNode* node2= locateHash(n2, hashtable, size);
+                FriendNode* friend2 = initFriendNode(n1);
                 if(friend2 == NULL){
                     printf("The memory allocation failed");
                     break;
@@ -85,20 +86,19 @@ int main(){
 			
 			case 'U':{
                 getchar();
-                char *name1, *name2;
-                name1 = (char *)calloc(50, sizeof(char));
-                name2 = (char *)calloc(50, sizeof(char));
-                scanf("%s %s",name1,name2);
+                char* n1 = (char *)calloc(50, sizeof(char));
+                char* n2 = (char *)calloc(50, sizeof(char));
+                scanf("%s %s",n1,n2);
                 
-                int key1 = keyHelper(name1);
-                int key2 = keyHelper(name2);
+                int key1 = keyHelper(n1);
+                int key2 = keyHelper(n2);
                 
-                HashNode* Node1 = locateHash(name1, hashtable, size);
+                HashNode* Node1 = locateHash(n1, hashtable, size);
                 if(Node1 == NULL){
-                	 printf("%s is not recorded in the system", name1);
+                	 printf("%s is not recorded in the system", n1);
                      break;
 				}
-                FriendNode* Friend1 = locateFriend(Node1, name2);
+                FriendNode* Friend1 = locateFriend(Node1, n2);
                 if(Friend1 == NULL){
                 	printf("These two persons are not friends");
                 	break;
@@ -106,12 +106,12 @@ int main(){
                 deleteFriend(Node1,Friend1);
                 
                 
-                HashNode* Node2 = locateHash(name2, hashtable, size);
+                HashNode* Node2 = locateHash(n2, hashtable, size);
                 if(Node2 == NULL){
-                	 printf("%s is not recorded in the system", name2);
+                	 printf("%s is not recorded in the system", n2);
                      break;
 				}
-                FriendNode * Friend2 = locateFriend(Node2, name1);
+                FriendNode * Friend2 = locateFriend(Node2, n1);
                 deleteFriend(Node2,Friend2);
                 
                 break;
@@ -119,18 +119,19 @@ int main(){
             
              case 'Q':{
                 getchar();
-                char *name1, *name2;
-                name1 = (char *)calloc(50, sizeof(char));
-                name2 = (char *)calloc(50, sizeof(char));
-                scanf("%s %s",name1, name2);
+                char* n1= (char *)calloc(50, sizeof(char));
+                char* n2 = (char *)calloc(50, sizeof(char));
+                scanf("%s %s",n1, n2);
                 
                 HashNode* node;
-                node = locateHash(name1, hashtable, size);
-                FriendNode* Friend = locateFriend(node, name2);
-                if(Friend == NULL)
-                    printf("NO\n");
-                else
+                node = locateHash(n1, hashtable, size);
+                FriendNode* Friend = locateFriend(node, n2);
+                if(Friend == NULL){
+                	 printf("NO\n");
+                	 break; 
+				}else{ 
                     printf("YES\n");
+                }
                 break;
             }
             
@@ -140,6 +141,6 @@ int main(){
         char a;
         while(a != '\n' && (a = getchar()) != EOF );
         printf("\n");
-    }
+    }while(command != 'X'); 
     return 0;
 }
